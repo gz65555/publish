@@ -1,5 +1,12 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { exec } from './exec'
+import micromatch from 'micromatch'
+
+const defaultMap: Record<string, string> = {
+  main: 'latest',
+  'dev/*': 'beta',
+  '[0-9]+.[0-9]+': 'latest'
+}
 
 /**
  * The main function for the action.
@@ -7,20 +14,26 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const branches = core.getInput('branches')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const map = branches ? JSON.parse(branches) : defaultMap
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const branch = (await exec(`git branch --show-current`)).trim()
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    const keys = Object.keys(map)
+    const result = micromatch([branch], keys)
+    if (result.length > 0) {
+      const tag = map[result[0]]
+      try {
+        await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
+      } catch (error) {
+        console.error('执行命令时出错:', error.message)
+        throw error.output[1].toString()
+      }
+    } else {
+      core.notice(`no match for the ${branch} branch, stop release`)
+    }
   } catch (error) {
-    // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
   }
 }

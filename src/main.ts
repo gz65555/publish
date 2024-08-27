@@ -16,9 +16,15 @@ export async function run(): Promise<void> {
   try {
     const branches = core.getInput('branches')
 
+    core.debug(`branches: ${branches}`)
+
     const map = branches ? JSON.parse(branches) : defaultMap
 
+    core.debug(`branches map: ${map}`)
+
     const branch = (await exec(`git branch --show-current`)).trim()
+
+    core.debug(`current branch: ${branch}`)
 
     const keys = Object.keys(map)
     const result = micromatch([branch], keys)

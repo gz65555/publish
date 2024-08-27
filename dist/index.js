@@ -29120,8 +29120,11 @@ const defaultMap = {
 async function run() {
     try {
         const branches = core.getInput('branches');
+        core.debug(`branches: ${branches}`);
         const map = branches ? JSON.parse(branches) : defaultMap;
+        core.debug(`branches map: ${map}`);
         const branch = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
+        core.debug(`current branch: ${branch}`);
         const keys = Object.keys(map);
         const result = (0, micromatch_1.default)([branch], keys);
         if (result.length > 0) {

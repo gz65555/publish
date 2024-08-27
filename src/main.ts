@@ -40,6 +40,7 @@ export async function run(): Promise<void> {
       core.notice(`no match for the ${branch} branch, stop release`)
     }
   } catch (error) {
+    core.debug(`error: ${error}`)
     if (error instanceof Error) core.setFailed(error.message)
   }
 }

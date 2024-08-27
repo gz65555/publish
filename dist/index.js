@@ -29142,9 +29142,8 @@ async function run() {
         }
     }
     catch (error) {
-        core.debug(`error: ${error}`);
-        if (error instanceof Error)
-            core.setFailed(error.message);
+        core.debug(`error: ${typeof error}`);
+        core.setFailed(error);
     }
 }
 

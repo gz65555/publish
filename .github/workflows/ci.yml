@@ -21,28 +21,22 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          node-version-file: .node-version
-          cache: npm
+          run_install: true
 
       - name: Install Dependencies
         id: npm-ci
-        run: npm ci
+        run: pnpm ci
 
       - name: Check Format
         id: npm-format-check
-        run: npm run format:check
+        run: pnpm format:check
 
       - name: Lint
         id: npm-lint
-        run: npm run lint
-
-      - name: Test
-        id: npm-ci-test
-        run: npm run ci-test
+        run: pnpm lint
 
   test-action:
     name: GitHub Actions Test

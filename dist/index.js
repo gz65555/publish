@@ -29122,15 +29122,18 @@ async function run() {
         const branches = core.getInput('branches');
         core.debug(`branches: ${branches}`);
         const map = branches ? JSON.parse(branches) : defaultMap;
-        core.debug(`branches map: ${map}`);
+        core.debug(`branches map: ${JSON.stringify(map)}`);
         const branch = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
         core.debug(`current branch: ${branch}`);
         const keys = Object.keys(map);
         const result = (0, micromatch_1.default)([branch], keys);
+        core.debug(`matched ${JSON.stringify(result)}`);
         if (result.length > 0) {
             const tag = map[result[0]];
+            core.debug(`publish tag is ${tag}`);
             try {
-                await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
+                const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
+                core.info(stdout);
             }
             catch (error) {
                 console.error('执行命令时出错:', error.message);

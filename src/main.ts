@@ -20,7 +20,7 @@ export async function run(): Promise<void> {
 
     const map = branches ? JSON.parse(branches) : defaultMap
 
-    core.debug(`branches map: ${map}`)
+    core.debug(`branches map: ${JSON.stringify(map)}`)
 
     const branch = (await exec(`git branch --show-current`)).trim()
 
@@ -28,10 +28,17 @@ export async function run(): Promise<void> {
 
     const keys = Object.keys(map)
     const result = micromatch([branch], keys)
+
+    core.debug(`matched ${JSON.stringify(result)}`)
+
     if (result.length > 0) {
       const tag = map[result[0]]
+      core.debug(`publish tag is ${tag}`)
       try {
-        await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
+        const stdout = await exec(
+          `pnpm publish -r --tag ${tag} --no-git-checks`
+        )
+        core.info(stdout)
       } catch (error) {
         console.error('执行命令时出错:', error.message)
         throw error.output[1].toString()

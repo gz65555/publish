@@ -29142,6 +29142,7 @@ async function run() {
         }
     }
     catch (error) {
+        core.debug(`error: ${error}`);
         if (error instanceof Error)
             core.setFailed(error.message);
     }

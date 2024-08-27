@@ -29059,7 +29059,7 @@ const child_process_1 = __nccwpck_require__(2081);
 async function exec(input, cwd = process.cwd()) {
     return new Promise((resolve, reject) => {
         (0, child_process_1.exec)(input, { cwd }, (error, stdout, stderr) => {
-            if (error) {
+            if (!error) {
                 resolve(stdout);
             }
             else {

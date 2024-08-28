@@ -1,12 +1,7 @@
 import * as core from '@actions/core'
 import { exec } from './exec'
-import micromatch from 'micromatch'
-
-const defaultMap: Record<string, string> = {
-  main: 'latest',
-  'dev/*': 'beta',
-  '[0-9]+.[0-9]+': 'latest'
-}
+import path from 'path'
+import fs from 'fs/promises'
 
 /**
  * The main function for the action.
@@ -14,22 +9,13 @@ const defaultMap: Record<string, string> = {
  */
 export async function run(): Promise<void> {
   try {
-    const branches = core.getInput('branches')
-
-    core.debug(`branches: ${branches}`)
-
-    const map = branches ? JSON.parse(branches) : defaultMap
-
-    core.debug(`branches map: ${JSON.stringify(map)}`)
-
-    const tag = await getPublishTag(map)
-
+    const tag = await getPublishTag()
     core.debug(`publish tag is ${tag}`)
     try {
       const stdout = await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
       core.info(stdout)
     } catch (error) {
-      core.error(error)
+      core.error(JSON.stringify(error))
       throw error.output[1].toString()
     }
   } catch (error) {
@@ -38,15 +24,15 @@ export async function run(): Promise<void> {
   }
 }
 
-async function getPublishTag(map: Record<string, string>) {
-  core.debug(`branches map: ${JSON.stringify(map)}`)
-  // default is latest
-  const branch = (await exec(`git branch --show-current`)).trim()
-
-  if (branch.length <= 0) {
-    // tag branch
-    const version = (await exec(`git branch --show-current`)).trim()
-    core.debug(`tag version is ${version}`)
+async function getPublishTag() {
+  try {
+    const pkg = JSON.parse(
+      await fs.readFile(path.join(process.cwd(), 'package.json'), {
+        encoding: 'utf-8'
+      })
+    )
+    const version = pkg.version
+    core.debug(`current version: ${version}`)
     if (!version) {
       return 'latest'
     }
@@ -56,10 +42,7 @@ async function getPublishTag(map: Record<string, string>) {
     } else {
       return 'latest'
     }
-  } else {
-    const keys = Object.keys(map)
-    const result = micromatch([branch], keys)
-    core.debug(`matched ${JSON.stringify(result)}`)
-    return map[result[0]]
+  } catch (e) {
+    core.setFailed(e)
   }
 }

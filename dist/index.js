@@ -29123,30 +29123,45 @@ async function run() {
         core.debug(`branches: ${branches}`);
         const map = branches ? JSON.parse(branches) : defaultMap;
         core.debug(`branches map: ${JSON.stringify(map)}`);
-        const branch = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
-        core.debug(`current branch: ${branch}`);
-        const keys = Object.keys(map);
-        const result = (0, micromatch_1.default)([branch], keys);
-        core.debug(`matched ${JSON.stringify(result)}`);
-        if (result.length > 0) {
-            const tag = map[result[0]];
-            core.debug(`publish tag is ${tag}`);
-            try {
-                const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
-                core.info(stdout);
-            }
-            catch (error) {
-                console.error('执行命令时出错:', error.message);
-                throw error.output[1].toString();
-            }
+        const tag = await getPublishTag(map);
+        core.debug(`publish tag is ${tag}`);
+        try {
+            const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
+            core.info(stdout);
         }
-        else {
-            core.notice(`no match for the ${branch} branch, stop release`);
+        catch (error) {
+            console.error('执行命令时出错:', error.message);
+            throw error.output[1].toString();
         }
     }
     catch (error) {
         core.debug(`error: ${typeof error}`);
         core.setFailed(error);
+    }
+}
+async function getPublishTag(map) {
+    core.debug(`branches map: ${JSON.stringify(map)}`);
+    // default is latest
+    const branch = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
+    if (branch.length < 0) {
+        // tag branch
+        const version = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
+        if (!version) {
+            return 'latest';
+        }
+        const match = version.match(/-(\w+)\./);
+        if (match) {
+            return match[1];
+        }
+        else {
+            return 'latest';
+        }
+    }
+    else {
+        const keys = Object.keys(map);
+        const result = (0, micromatch_1.default)([branch], keys);
+        core.debug(`matched ${JSON.stringify(result)}`);
+        return map[result[0]];
     }
 }
 

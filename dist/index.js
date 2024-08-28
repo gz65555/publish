@@ -29130,7 +29130,7 @@ async function run() {
             core.info(stdout);
         }
         catch (error) {
-            console.error('执行命令时出错:', error.message);
+            core.error(error);
             throw error.output[1].toString();
         }
     }
@@ -29143,9 +29143,10 @@ async function getPublishTag(map) {
     core.debug(`branches map: ${JSON.stringify(map)}`);
     // default is latest
     const branch = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
-    if (branch.length < 0) {
+    if (branch.length <= 0) {
         // tag branch
         const version = (await (0, exec_1.exec)(`git branch --show-current`)).trim();
+        core.debug(`tag version is ${version}`);
         if (!version) {
             return 'latest';
         }

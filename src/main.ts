@@ -29,7 +29,7 @@ export async function run(): Promise<void> {
       const stdout = await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
       core.info(stdout)
     } catch (error) {
-      console.error('执行命令时出错:', error.message)
+      core.error(error)
       throw error.output[1].toString()
     }
   } catch (error) {
@@ -43,9 +43,10 @@ async function getPublishTag(map: Record<string, string>) {
   // default is latest
   const branch = (await exec(`git branch --show-current`)).trim()
 
-  if (branch.length < 0) {
+  if (branch.length <= 0) {
     // tag branch
     const version = (await exec(`git branch --show-current`)).trim()
+    core.debug(`tag version is ${version}`)
     if (!version) {
       return 'latest'
     }

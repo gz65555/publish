@@ -17,6 +17,7 @@ export async function run(): Promise<void> {
 
     const cwd = process.cwd()
     const dirs = await fs.readdir(path.join(cwd, 'packages'))
+    core.debug(`dirs: ${JSON.stringify(dirs)}`)
     await Promise.all(dirs.map(dir => uploadPackageJS(path.join(cwd, dir))))
   } catch (error) {
     core.error(JSON.stringify(error))

@@ -28535,6 +28535,7 @@ async function run() {
         core.info(stdout);
         const cwd = process.cwd();
         const dirs = await promises_1.default.readdir(path_1.default.join(cwd, 'packages'));
+        core.debug(`dirs: ${JSON.stringify(dirs)}`);
         await Promise.all(dirs.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, dir))));
     }
     catch (error) {
@@ -28645,6 +28646,7 @@ async function uploadPackageJS(dirPath) {
     }));
     const version = pkg.version;
     const files = fs_1.default.readdirSync(distPath);
+    core.debug(`upload package: ${pkg.name}`);
     for (let i = 0; i < files.length; i++) {
         const filename = files[i];
         const filepath = path_1.default.join(distPath, filename);
@@ -28653,6 +28655,7 @@ async function uploadPackageJS(dirPath) {
             filepath,
             alias: `${pkg.name}/${version}/${filename}`
         });
+        core.info(`uploaded: ${res.data}`);
     }
 }
 async function upload({ filename, alias, filepath }) {
@@ -28664,9 +28667,7 @@ async function upload({ filename, alias, filepath }) {
     form.append('filename', filename);
     form.append('alias', alias);
     form.append('file', file);
-    core.debug(`upload filename: ${filename}, alias: ${alias}, filepath: ${filepath}`);
     const result = await (0, request_1.uploadByPublicKey)(form);
-    core.info(result.data.data);
     return result.data;
 }
 

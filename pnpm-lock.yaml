@@ -10,9 +10,12 @@ importers:
       '@actions/core':
         specifier: ^1.10.1
         version: 1.10.1
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
+      axios:
+        specifier: 1.6.7
+        version: 1.6.7
+      formdata-node:
+        specifier: ^6.0.3
+        version: 6.0.3
     devDependencies:
       '@types/micromatch':
         specifier: ^4.0.9
@@ -485,6 +488,12 @@ packages:
         integrity: sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==
       }
 
+  asynckit@0.4.0:
+    resolution:
+      {
+        integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
+      }
+
   available-typed-arrays@1.0.7:
     resolution:
       {
@@ -498,6 +507,12 @@ packages:
         integrity: sha512-Mr2ZakwQ7XUAjp7pAwQWRhhK8mQQ6JAaNWSjmjxil0R8BPioMtQsTLOolGYkji1rcL++3dCqZA3zWqpT+9Ew6g==
       }
     engines: { node: '>=4' }
+
+  axios@1.6.7:
+    resolution:
+      {
+        integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
+      }
 
   axobject-query@3.1.1:
     resolution:
@@ -644,6 +659,13 @@ packages:
         integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
       }
 
+  combined-stream@1.0.8:
+    resolution:
+      {
+        integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
+      }
+    engines: { node: '>= 0.8' }
+
   common-tags@1.8.2:
     resolution:
       {
@@ -759,6 +781,13 @@ packages:
       {
         integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==
       }
+
+  delayed-stream@1.0.0:
+    resolution:
+      {
+        integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
+      }
+    engines: { node: '>=0.4.0' }
 
   dequal@2.0.3:
     resolution:
@@ -1188,11 +1217,37 @@ packages:
         integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
       }
 
+  follow-redirects@1.15.6:
+    resolution:
+      {
+        integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
+      }
+    engines: { node: '>=4.0' }
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
   for-each@0.3.3:
     resolution:
       {
         integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==
       }
+
+  form-data@4.0.0:
+    resolution:
+      {
+        integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
+      }
+    engines: { node: '>= 6' }
+
+  formdata-node@6.0.3:
+    resolution:
+      {
+        integrity: sha512-8e1++BCiTzUno9v5IZ2J6bv4RU+3UKDmqWUQD0MIMVCd9AdhWkO1gw57oo1mNEX1dMq2EGI+FbWz4B92pscSQg==
+      }
+    engines: { node: '>= 18' }
 
   fs-minipass@2.1.0:
     resolution:
@@ -1822,6 +1877,20 @@ packages:
       }
     engines: { node: '>=8.6' }
 
+  mime-db@1.52.0:
+    resolution:
+      {
+        integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
+      }
+    engines: { node: '>= 0.6' }
+
+  mime-types@2.1.35:
+    resolution:
+      {
+        integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
+      }
+    engines: { node: '>= 0.6' }
+
   mimic-fn@4.0.0:
     resolution:
       {
@@ -2174,6 +2243,12 @@ packages:
         integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==
       }
     engines: { node: '>= 6' }
+
+  proxy-from-env@1.1.0:
+    resolution:
+      {
+        integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
+      }
 
   punycode@2.3.1:
     resolution:
@@ -2990,11 +3065,21 @@ snapshots:
 
   ast-types-flow@0.0.8: {}
 
+  asynckit@0.4.0: {}
+
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
 
   axe-core@4.10.0: {}
+
+  axios@1.6.7:
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
 
   axobject-query@3.1.1:
     dependencies:
@@ -3106,6 +3191,10 @@ snapshots:
 
   color-name@1.1.4: {}
 
+  combined-stream@1.0.8:
+    dependencies:
+      delayed-stream: 1.0.0
+
   common-tags@1.8.2: {}
 
   concat-map@0.0.1: {}
@@ -3184,6 +3273,8 @@ snapshots:
       object-keys: 1.1.1
 
   defu@6.1.4: {}
+
+  delayed-stream@1.0.0: {}
 
   dequal@2.0.3: {}
 
@@ -3588,9 +3679,19 @@ snapshots:
 
   flatted@3.3.1: {}
 
+  follow-redirects@1.15.6: {}
+
   for-each@0.3.3:
     dependencies:
       is-callable: 1.2.7
+
+  form-data@4.0.0:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+
+  formdata-node@6.0.3: {}
 
   fs-minipass@2.1.0:
     dependencies:
@@ -3930,6 +4031,12 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.1
 
+  mime-db@1.52.0: {}
+
+  mime-types@2.1.35:
+    dependencies:
+      mime-db: 1.52.0
+
   mimic-fn@4.0.0: {}
 
   minimatch@3.1.2:
@@ -4122,6 +4229,8 @@ snapshots:
     dependencies:
       kleur: 3.0.3
       sisteransi: 1.0.5
+
+  proxy-from-env@1.1.0: {}
 
   punycode@2.3.1: {}
 

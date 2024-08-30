@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { exec } from './exec'
 import path from 'path'
 import fs from 'fs/promises'
+import { uploadPackageJS } from './upload'
 
 /**
  * The main function for the action.
@@ -11,15 +12,14 @@ export async function run(): Promise<void> {
   try {
     const tag = await getPublishTag()
     core.debug(`publish tag is ${tag}`)
-    try {
-      const stdout = await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
-      core.info(stdout)
-    } catch (error) {
-      core.error(JSON.stringify(error))
-      throw error.output[1].toString()
-    }
+    const stdout = await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)
+    core.info(stdout)
+
+    const cwd = process.cwd()
+    const dirs = await fs.readdir(path.join(cwd, 'packages'))
+    await Promise.all(dirs.map(dir => uploadPackageJS(path.join(cwd, dir))))
   } catch (error) {
-    core.debug(`error: ${typeof error}`)
+    core.error(JSON.stringify(error))
     core.setFailed(error)
   }
 }

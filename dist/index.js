@@ -28536,7 +28536,7 @@ async function run() {
         const cwd = process.cwd();
         const dirs = await promises_1.default.readdir(path_1.default.join(cwd, 'packages'));
         core.debug(`dirs: ${JSON.stringify(dirs)}`);
-        await Promise.all(dirs.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, dir))));
+        await Promise.all(dirs.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, 'packages', dir))));
     }
     catch (error) {
         core.error(JSON.stringify(error));
@@ -28639,7 +28639,7 @@ const publicKey = process.env['OASISBE_PUBLIC_KEY'];
 async function uploadPackageJS(dirPath) {
     const distPath = path_1.default.join(dirPath, 'dist');
     if (!fs_1.default.existsSync(distPath)) {
-        core.info(`${dirPath} does not exist, ignore release.`);
+        core.info(`${distPath} does not exist, ignore release.`);
         return;
     }
     const pkg = JSON.parse(fs_1.default.readFileSync(path_1.default.join(dirPath, 'package.json'), {

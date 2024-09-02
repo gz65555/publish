@@ -10,7 +10,7 @@ const publicKey = process.env['OASISBE_PUBLIC_KEY']
 export async function uploadPackageJS(dirPath: string) {
   const distPath = path.join(dirPath, 'dist')
   if (!fs.existsSync(distPath)) {
-    core.info(`${dirPath} does not exist, ignore release.`)
+    core.info(`${distPath} does not exist, ignore release.`)
     return
   }
   const pkg = JSON.parse(

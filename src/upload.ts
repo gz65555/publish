@@ -26,7 +26,7 @@ async function recursiveDist(
     const stat = fs.statSync(filepath)
     if (stat.isFile()) {
       await callback(filepath)
-      await wait(200)
+      await wait(80)
     } else if (stat.isDirectory()) {
       await recursiveDist(filepath, callback)
     }

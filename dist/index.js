@@ -28636,6 +28636,13 @@ const crypto_1 = __importDefault(__nccwpck_require__(6113));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(9093));
 const publicKey = process.env['OASISBE_PUBLIC_KEY'];
+function wait(time) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, time);
+    });
+}
 async function recursiveDist(distPath, callback) {
     const files = fs_1.default.readdirSync(distPath);
     for (let i = 0; i < files.length; i++) {
@@ -28644,9 +28651,10 @@ async function recursiveDist(distPath, callback) {
         const stat = fs_1.default.statSync(filepath);
         if (stat.isFile()) {
             await callback(filepath);
+            await wait(80);
         }
         else if (stat.isDirectory()) {
-            recursiveDist(filepath, callback);
+            await recursiveDist(filepath, callback);
         }
     }
 }
@@ -28661,7 +28669,7 @@ async function uploadPackageJS(dirPath) {
     }));
     const version = pkg.version;
     core.debug(`upload package: ${pkg.name}`);
-    recursiveDist(distPath, async (filepath) => {
+    await recursiveDist(distPath, async (filepath) => {
         core.debug(`start upload: ${filepath}`);
         const res = await upload({
             filename: path_1.default.basename(filepath),

@@ -28636,6 +28636,20 @@ const crypto_1 = __importDefault(__nccwpck_require__(6113));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(9093));
 const publicKey = process.env['OASISBE_PUBLIC_KEY'];
+async function recursiveDist(distPath, callback) {
+    const files = fs_1.default.readdirSync(distPath);
+    for (let i = 0; i < files.length; i++) {
+        const filename = files[i];
+        const filepath = path_1.default.join(distPath, filename);
+        const stat = fs_1.default.statSync(filepath);
+        if (stat.isFile()) {
+            await callback(filepath);
+        }
+        else if (stat.isDirectory()) {
+            recursiveDist(filepath, callback);
+        }
+    }
+}
 async function uploadPackageJS(dirPath) {
     const distPath = path_1.default.join(dirPath, 'dist');
     if (!fs_1.default.existsSync(distPath)) {
@@ -28646,18 +28660,16 @@ async function uploadPackageJS(dirPath) {
         encoding: 'utf-8'
     }));
     const version = pkg.version;
-    const files = fs_1.default.readdirSync(distPath);
     core.debug(`upload package: ${pkg.name}`);
-    for (let i = 0; i < files.length; i++) {
-        const filename = files[i];
-        const filepath = path_1.default.join(distPath, filename);
+    recursiveDist(distPath, async (filepath) => {
+        core.debug(`start upload: ${filepath}`);
         const res = await upload({
-            filename,
+            filename: path_1.default.basename(filepath),
             filepath,
-            alias: `${pkg.name}/${version}/${filename}`
+            alias: `${pkg.name}/${version}/${path_1.default.relative(distPath, filepath)}`
         });
         core.info(`uploaded: ${res.data}`);
-    }
+    });
 }
 async function upload({ filename, alias, filepath }) {
     const form = new FormData();

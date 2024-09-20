@@ -7,6 +7,23 @@ import * as core from '@actions/core'
 
 const publicKey = process.env['OASISBE_PUBLIC_KEY']
 
+async function recursiveDist(
+  distPath: string,
+  callback: (filepath: string) => Promise<any>
+) {
+  const files = fs.readdirSync(distPath)
+  for (let i = 0; i < files.length; i++) {
+    const filename = files[i]
+    const filepath = path.join(distPath, filename)
+    const stat = fs.statSync(filepath)
+    if (stat.isFile()) {
+      await callback(filepath)
+    } else if (stat.isDirectory()) {
+      recursiveDist(filepath, callback)
+    }
+  }
+}
+
 export async function uploadPackageJS(dirPath: string) {
   const distPath = path.join(dirPath, 'dist')
   if (!fs.existsSync(distPath)) {
@@ -19,19 +36,16 @@ export async function uploadPackageJS(dirPath: string) {
     })
   )
   const version = pkg.version
-  const files = fs.readdirSync(distPath)
   core.debug(`upload package: ${pkg.name}`)
-  for (let i = 0; i < files.length; i++) {
-    const filename = files[i]
-    const filepath = path.join(distPath, filename)
-
+  recursiveDist(distPath, async filepath => {
+    core.debug(`start upload: ${filepath}`)
     const res = await upload({
-      filename,
+      filename: path.basename(filepath),
       filepath,
-      alias: `${pkg.name}/${version}/${filename}`
+      alias: `${pkg.name}/${version}/${path.relative(distPath, filepath)}`
     })
     core.info(`uploaded: ${res.data}`)
-  }
+  })
 }
 
 export async function upload({

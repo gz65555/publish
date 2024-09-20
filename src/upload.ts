@@ -7,6 +7,14 @@ import * as core from '@actions/core'
 
 const publicKey = process.env['OASISBE_PUBLIC_KEY']
 
+function wait(time: number) {
+  return new Promise<void>(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+}
+
 async function recursiveDist(
   distPath: string,
   callback: (filepath: string) => Promise<any>
@@ -18,8 +26,9 @@ async function recursiveDist(
     const stat = fs.statSync(filepath)
     if (stat.isFile()) {
       await callback(filepath)
+      await wait(200)
     } else if (stat.isDirectory()) {
-      recursiveDist(filepath, callback)
+      await recursiveDist(filepath, callback)
     }
   }
 }
@@ -37,7 +46,7 @@ export async function uploadPackageJS(dirPath: string) {
   )
   const version = pkg.version
   core.debug(`upload package: ${pkg.name}`)
-  recursiveDist(distPath, async filepath => {
+  await recursiveDist(distPath, async filepath => {
     core.debug(`start upload: ${filepath}`)
     const res = await upload({
       filename: path.basename(filepath),

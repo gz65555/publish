@@ -12,8 +12,8 @@ inputs:
     description: 'set the branches to trigger the action'
     required: false
 
-  files:
-    description: 'set the files to upload'
+  packages:
+    description: 'set the packages to upload'
     required: false
 
   publish:

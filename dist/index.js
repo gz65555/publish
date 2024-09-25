@@ -28530,7 +28530,8 @@ const upload_1 = __nccwpck_require__(3075);
 async function run() {
     try {
         const needPublish = core.getInput('publish');
-        if (needPublish) {
+        core.debug(`need publish: ${needPublish}`);
+        if (needPublish === 'true') {
             const tag = await getPublishTag();
             core.debug(`publish tag is ${tag}`);
             const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);

@@ -13,7 +13,9 @@ export async function run(): Promise<void> {
   try {
     const needPublish = core.getInput('publish')
 
-    if (needPublish) {
+    core.debug(`need publish: ${needPublish}`)
+
+    if (needPublish === 'true') {
       const tag = await getPublishTag()
       core.debug(`publish tag is ${tag}`)
       const stdout = await exec(`pnpm publish -r --tag ${tag} --no-git-checks`)

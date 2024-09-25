@@ -12,6 +12,15 @@ inputs:
     description: 'set the branches to trigger the action'
     required: false
 
+  files:
+    description: 'set the files to upload'
+    required: false
+
+  publish:
+    description: 'need publish or not'
+    required: false
+    default: true
+
 runs:
   using: node20
   main: dist/index.js

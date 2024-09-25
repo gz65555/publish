@@ -28529,14 +28529,24 @@ const upload_1 = __nccwpck_require__(3075);
  */
 async function run() {
     try {
-        const tag = await getPublishTag();
-        core.debug(`publish tag is ${tag}`);
-        const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
-        core.info(stdout);
+        const needPublish = core.getInput('publish');
+        if (needPublish) {
+            const tag = await getPublishTag();
+            core.debug(`publish tag is ${tag}`);
+            const stdout = await (0, exec_1.exec)(`pnpm publish -r --tag ${tag} --no-git-checks`);
+            core.info(stdout);
+        }
+        const packages = core.getMultilineInput('packages');
         const cwd = process.cwd();
-        const dirs = await promises_1.default.readdir(path_1.default.join(cwd, 'packages'));
-        core.debug(`dirs: ${JSON.stringify(dirs)}`);
-        await Promise.all(dirs.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, 'packages', dir))));
+        if (packages) {
+            core.debug(`dirs: ${JSON.stringify(packages)}`);
+            await Promise.all(packages.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, dir))));
+        }
+        else {
+            const dirs = await promises_1.default.readdir(path_1.default.join(cwd, 'packages'));
+            core.debug(`dirs: ${JSON.stringify(dirs)}`);
+            await Promise.all(dirs.map(dir => (0, upload_1.uploadPackageJS)(path_1.default.join(cwd, 'packages', dir))));
+        }
     }
     catch (error) {
         core.error(JSON.stringify(error));

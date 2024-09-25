@@ -1,12 +1,5 @@
-const { uploadPackageJS, upload } = require('./dist/index')
-const path = require('path')
+const { glob, globSync, globStream, globStreamSync, Glob } = require('glob')
 
-uploadPackageJS(process.cwd())
-  .then(res => console.log(res))
-  .catch(err => console.log(err))
-
-// upload({
-//   filename: 'index.js',
-//   alias: '1.2.10/192.js',
-//   filepath: path.join(process.cwd(), 'dist','index.js')
-// })
+glob('dist/**/*.js', { ignore: 'node_modules/**' }).then(jsfiles => {
+  console.log(jsfiles)
+})

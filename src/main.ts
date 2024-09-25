@@ -56,7 +56,7 @@ async function getPublishTag() {
     if (!version) {
       return 'latest'
     }
-    const match = version.match(/-(\w+)\./)
+    const match = version.match(/-(.*?)(\.|\-)/)
     if (match) {
       return match[1]
     } else {
